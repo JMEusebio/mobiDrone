@@ -21,6 +21,9 @@
         <activity android:name=".MapPickerActivity"></activity>
         <activity android:name=".DroneMapActivity"></activity>
         <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".MessageCenter"/>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

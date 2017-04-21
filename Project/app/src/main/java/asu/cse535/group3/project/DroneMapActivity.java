@@ -274,7 +274,7 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         checkdistance(location, destloc);
-        checkDeviation(location);
+        //checkDeviation(location); //will enable later
 
 
 

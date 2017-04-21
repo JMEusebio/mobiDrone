@@ -1,6 +1,7 @@
 package asu.cse535.group3.project;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -53,8 +54,20 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Intent settingsIntent = new Intent(LoginActivity.this, SettingsActivity.class);
-                    startActivity(settingsIntent);
+                    builder.setMessage("Thank you for logging in.")
+                            .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent settingsIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(settingsIntent);
+
+                                }
+                            })
+                            .create()
+                            .show();
+
+
                 }
 
 

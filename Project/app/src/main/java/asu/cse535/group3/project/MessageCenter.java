@@ -35,12 +35,22 @@ public class MessageCenter extends AppCompatActivity {
                 String messageText = message.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(MessageCenter.this);
 
-                dh.addFeedback(messageText);
+               // dh.addFeedback(messageText);
 
-                builder.setMessage("You have been successfully registered.")
-                        .setPositiveButton("Close",null)
+
+                builder.setMessage("Your message has been sent. Thank you for your feedback!")
+                        .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                message.setText("");
+                                finish();
+                            }
+                        })
                         .create()
                         .show();
+
+
+
                 }
 
 
@@ -50,3 +60,4 @@ public class MessageCenter extends AppCompatActivity {
         });
     }
 }
+

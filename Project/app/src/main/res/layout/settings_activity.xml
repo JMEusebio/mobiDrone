@@ -14,28 +14,28 @@
         tools:layout_editor_absoluteY="8dp">
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/settingsFeedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Submit Feedback" />
 
         <Button
-            android:id="@+id/button8"
+            android:id="@+id/locationHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Location History" />
 
         <Button
-            android:id="@+id/button9"
+            android:id="@+id/userDev"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="User Path Deviation" />
 
         <Button
-            android:id="@+id/button10"
+            android:id="@+id/registerNew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="User Destination " />
 
         <Button
             android:id="@+id/backButton"

@@ -89,17 +89,33 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onClick(View v){
+
+
+            if(!schedule) {
+
                 Intent intent = new Intent(getBaseContext(), DroneMapActivity.class);
 
-                if(!schedule) {
-                    DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
-                }
+                DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
 
                 intent.putExtra("dlat", mDLocationMarkerMarker.getPosition().latitude);
                 intent.putExtra("dlong", mDLocationMarkerMarker.getPosition().longitude);
                 //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivityForResult(intent,0);
                 startActivity(intent);
+
+            }
+
+            if(schedule){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MapPickerActivity.this);
+                    builder.setMessage("Thank you for scheduling a drone. It will be dispatched at your selected time")
+                            .setPositiveButton("Close",null)
+                            .create()
+                            .show();
+
+                    //Code to check time and send drone at proper time
+
+            }
+
             }});
     }
 

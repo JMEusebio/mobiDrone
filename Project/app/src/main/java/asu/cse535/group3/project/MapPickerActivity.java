@@ -10,10 +10,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +44,18 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
     LocationRequest mLocationRequest;
     LatLng currlatLng;
     Marker mDLocationMarkerMarker;
+    LatLng[] favlocs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         initialpass = true;
+        favlocs = new LatLng[4];
+        favlocs[0] = new LatLng(33.418530,-111.934029);
+        favlocs[1] = new LatLng(33.415517,-111.927546);
+        favlocs[2] = new LatLng(33.420117,-111.932136);
+        favlocs[3] = new LatLng(33.423567,-111.939269);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_picker);
 
@@ -117,6 +126,20 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
             }});
+
+        Spinner faves = (Spinner) findViewById(R.id.spinner);
+        faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mDLocationMarkerMarker.setPosition(favlocs[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     @Override

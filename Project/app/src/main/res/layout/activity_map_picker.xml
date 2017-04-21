@@ -20,14 +20,14 @@
     <TextView
         android:layout_gravity="left"
         android:id="@+id/pickerButton"
-        android:layout_width="275dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Favorite Locations: " />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
-        android:layout_height="66dp"
+        android:layout_height="40dp"
         android:entries="@array/Favorite_Places" />
 
 
@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_weight="1"
                 android:text="Request Later" />
 
         </RadioGroup>
@@ -76,7 +75,8 @@
             android:layout_weight="0.5"
             android:entries="@array/Hours"
             android:layout_alignBottom="@+id/radioGroup"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="11dp" />
 
         <Spinner
             android:id="@+id/spinner4"

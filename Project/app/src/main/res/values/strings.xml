@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Project</string>
     <string-array name="Favorite_Places">
+        <item>Current Location</item>
         <item>Memorial Union</item>
         <item>Barrett, The Honors College</item>
         <item>ECG</item>

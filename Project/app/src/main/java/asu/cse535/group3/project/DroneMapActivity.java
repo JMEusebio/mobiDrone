@@ -428,7 +428,7 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
             alertstart = true;
             new AlertDialog.Builder(this)
                     .setTitle("Navigation")
-                    .setMessage("You have reached your location")
+                    .setMessage("You have reached your location, releasing Drone")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

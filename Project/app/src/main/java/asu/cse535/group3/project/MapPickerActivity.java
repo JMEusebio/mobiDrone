@@ -131,7 +131,32 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mDLocationMarkerMarker.setPosition(favlocs[position]);
+                if (!initialpass) {
+                    if (mDLocationMarkerMarker != null) {
+                        mDLocationMarkerMarker.remove();
+                    }
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    if (position==0)
+                    {
+                        markerOptions.position(currlatLng);
+                    }
+                    else
+                    {
+                        markerOptions.position(favlocs[position-1]);
+                    }
+                    markerOptions.draggable(true);
+                    markerOptions.title("Current Position");
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    mDLocationMarkerMarker = mGoogleMap.addMarker(markerOptions);
+                    mDLocationMarkerMarker.setDraggable(true);
+
+                    TextView dloc = (TextView) findViewById(R.id.textView);
+                    dloc.setText("Destination: " + favlocs[position].latitude + ", " + favlocs[position].longitude);
+                    Button reqButton = (Button) findViewById(R.id.requestButton);
+                    reqButton.setEnabled(true);
+                }
+
+
             }
 
             @Override
@@ -139,6 +164,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
         });
+
 
     }
 

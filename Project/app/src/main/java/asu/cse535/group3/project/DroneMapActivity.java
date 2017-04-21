@@ -116,8 +116,8 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
                     viewingButton.setText("Start Video");
                     movieim.setVisibility(View.INVISIBLE);
 
-                    movieim.getLayoutParams().height = 1;
-                    movieim.requestLayout();
+                    //movieim.getLayoutParams().height = 1;
+                    //movieim.requestLayout();
                     movietext.setVisibility(View.INVISIBLE);
 
                 }
@@ -128,8 +128,8 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
                     viewingButton.setText("Stop Video");
                     movieim.setVisibility(View.VISIBLE);
 
-                    movieim.getLayoutParams().height = 500;
-                    movieim.requestLayout();
+                    //movieim.getLayoutParams().height = 500;
+                    //movieim.requestLayout();
                     movietext.setVisibility(View.VISIBLE);
 
                 }
@@ -448,10 +448,11 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
     double[] empty = {-1,-1};
     private double[] getUserCoordinates() { //returns users current coordinates in array [x][y]
 
+        userCoordinates = new double[2];
 
         if(coorUpdate) {
             userCoordinates[0] = currlatLng.latitude;
-            userCoordinates[0] = currlatLng.longitude;
+            userCoordinates[1] = currlatLng.longitude;
         }
         else{
 
@@ -487,6 +488,7 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         lat = lat0 + (180/Math.PI)*(dy/6378137);
         lon = lon0 + (180/Math.PI)*(dx/6378137)/(Math.cos(Math.PI/180.0*lat0));
 
+        nextCoordinates = new double[2];
         nextCoordinates[0] = lat;
         nextCoordinates[1] = lon;
         next.setLongitude(lon);

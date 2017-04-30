@@ -41,6 +41,9 @@ public class SettingsActivity extends AppCompatActivity {
                         .create()
                         .show();
 
+                Intent intent = new Intent(SettingsActivity.this, HistoryActivity.class);
+                startActivity(intent);
+
 
             }
 

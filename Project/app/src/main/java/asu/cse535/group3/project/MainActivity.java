@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.app.AlertDialog;
@@ -14,6 +15,7 @@ import static android.support.v7.appcompat.R.styleable.View;
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +23,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button navButton = (Button) findViewById(R.id.NavigationButton);
 
-
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        {
+            username = getIntent().getStringExtra("USERNAME");
+        }
 
         navButton.setOnClickListener( new android.view.View.OnClickListener() {
 
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, MapPickerActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
 
             }
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                loginIntent.putExtra("USERNAME", username);
+                Log.d("user", username);
                 startActivity(loginIntent);
             }
 

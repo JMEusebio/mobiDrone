@@ -48,7 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_CONTACTS + "(ID INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_USERNAME + " TEXT," + KEY_PASSWORD + " TEXT," + KEY_FEEDBACK + " TEXT," + KEY_LOCATION + " TEXT" +  ")";
 
         db.execSQL(CREATE_CONTACTS_TABLE);
@@ -93,27 +93,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return false;
     }
 
-    public void addFeedback(String message)
+    public void addFeedback(String user, String message)
     {
-        Log.d("feedback", "feedback");
-
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_FEEDBACK + "='" + message + "' where username = 'bob'");
+        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_FEEDBACK + "='" + message + "' where username = '" + user + "'");
         db.close();
 
         printUsers();
 
     }
 
-    public void addLocation(String location)
+    public void addLocation(String user, String location)
     {
+        refillHistory(user);
         history.add(location);
 
         String locations = android.text.TextUtils.join(",", history);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_LOCATION + "='" + locations + "' where username = 'bob'");
+        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_LOCATION + "='" + locations + "' where username = '" + user + "'");
         db.close();
+
+        printUsers();
+    }
+
+    public void refillHistory(String user)
+    {
+        String locations = getLocations(user);
+        String[] locationsArray = locations.split(",");
+
+        history.clear();
+        history.add(locationsArray[0]);
+        history.add(locationsArray[1]);
+        history.add(locationsArray[2]);
+        history.add(locationsArray[3]);
+        history.add(locationsArray[4]);
     }
 
     public boolean usernameExists(String username)
@@ -142,12 +156,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return false;
     }
 
-    public String getLocations()
+    public String getLocations(String user)
     {
         String locations = "";
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + TABLE_CONTACTS + " where username = 'bob'",null);
+        Cursor res = db.rawQuery("select * from " + TABLE_CONTACTS + " where username = '" + user + "'",null);
 
 
         if (res != null) {

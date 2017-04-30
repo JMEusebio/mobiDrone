@@ -43,8 +43,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
 
-                Log.d("yo", "yp");
-
                 if (!dh.isLoginCorrect(username, password))
                 {
                     builder.setMessage("Username and/or password is incorrect.")

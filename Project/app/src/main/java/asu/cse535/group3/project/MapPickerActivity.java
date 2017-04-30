@@ -134,6 +134,8 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                
+                // NEXT 2 LINES NEED TO BE MOVED. NEED TO EXECUTE WHEN 'REQUEST DRONE' BUTTON IS PRESSED
                 String curLocation = parent.getItemAtPosition(position).toString();
                 dh.addLocation(curLocation);
                     

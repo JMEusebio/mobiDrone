@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -63,6 +64,11 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
     LatLng dronelatLng;
     Marker mDroneMarker;
     Random rndgen;
+    Location currlocation;
+    boolean[] standingstill;
+    boolean startingwarning;
+    long lasttimeupdate;
+    Polyline directions;
 
 
 
@@ -84,6 +90,14 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         destloc = new Location("");
         destloc.setLatitude(dlatitude);
         destloc.setLongitude(dlongitude);
+        standingstill = new boolean[]{false,false,false,false,false};
+        currlocation = new Location("");
+        currlocation.setLatitude(0.0);
+        currlocation.setLongitude(0.0);
+        startingwarning = false;
+        lasttimeupdate = 0;
+
+
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -193,33 +207,15 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+
+    // following 5 methods taken from http://stackoverflow.com/questions/34582370/how-can-i-show-current-location-on-a-google-map-on-android-marshmallow with some slight modification
+
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        /*
-        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker arg0) {
-                return;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onMarkerDragEnd(Marker arg0) {
-                return;
-            }
-
-            @Override
-            public void onMarkerDrag(Marker arg0) {
-                return;
-            }
-        });
-        */
-
-        //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -250,8 +246,8 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(2000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -269,8 +265,70 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location)
     {
+        Location oldlocation = currlocation;
         currlatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        currlocation = location;
         coorUpdate = true;
+
+        float disttravled = oldlocation.distanceTo(currlocation);
+        if (disttravled < 3)
+        {
+            if(standingstill[0]==false)
+            {
+                standingstill[0]=true;
+            }
+            else if(standingstill[1]==false)
+            {
+                standingstill[1]=true;
+            }
+            else if(standingstill[2]==false)
+            {
+                standingstill[2]=true;
+            }
+            else if(standingstill[3]==false)
+            {
+                standingstill[3]=true;
+            }
+            else if(standingstill[4]==false)
+            {
+                standingstill[4]=true;
+            }
+            else if (startingwarning == false)
+            {
+                startingwarning = true;
+                new AlertDialog.Builder(this)
+                        .setTitle("Warning")
+                        .setMessage("We have detected that you are standing still for a prolonged time. Please choose whether to continue or end your navigation ")
+                        .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                System.out.println("continuing session");
+                                startingwarning = false;
+                                standingstill = new boolean[]{false,false,false,false,false};
+                            }
+                        })
+                        .setNegativeButton("End Navigation", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                setResult(RESULT_OK);
+                                startingwarning = false;
+                                standingstill = new boolean[]{false,false,false,false,false};
+                                }
+                        })
+
+                        .create()
+                        .show();
+            }
+
+
+
+        }
+        else
+        {
+            standingstill = new boolean[]{false,false,false,false,false};
+        }
+
+
 
 
         checkdistance(location, destloc);
@@ -337,17 +395,53 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
                     lineOptions.addAll(points);
                     lineOptions.width(10);
                     lineOptions.color(Color.BLUE);
-                    mGoogleMap.addPolyline(lineOptions);
+                    directions = mGoogleMap.addPolyline(lineOptions);
+
                 }
 
+            lasttimeupdate = System.currentTimeMillis();
+
             }
+
+            if (System.currentTimeMillis()-lasttimeupdate > 10000)
+            {
+                directions.remove();
+                String toparse = DroneServer.GetBestPath(currlatLng.latitude, currlatLng.longitude);
+                String[] parts = toparse.split("Start at \\(");
+                ArrayList<LatLng> points = new ArrayList<LatLng>();
+                for (int a = 1; a < parts.length; a++) {
+                    parts[a] = parts[a].split("\\), E")[0];
+                    Double lat = parseDouble(parts[a].split(",")[0]);
+                    Double lng = parseDouble(parts[a].split(",")[1]);
+                    LatLng temp = new LatLng(lat, lng);
+                    points.add(temp);
+
+                }
+                PolylineOptions lineOptions = new PolylineOptions();
+                if (points.size() > 1)
+                {
+                    lineOptions.addAll(points);
+                    lineOptions.width(10);
+                    lineOptions.color(Color.BLUE);
+                    directions = mGoogleMap.addPolyline(lineOptions);
+
+                }
+
+                lasttimeupdate = System.currentTimeMillis();
+
+
+            }
+
             String eta = DroneServer.GetEta(currlatLng.latitude,currlatLng.longitude);
             TextView etaTextView = (TextView) findViewById(R.id.etaText);
             etaTextView.setText("ETA: " + eta.replace("\"",""));
 
 
 
+
     }
+
+    //following 2 methods taken from: http://stackoverflow.com/questions/42637410/how-to-get-current-location-within-a-google-maps-fragment-in-a-viewpager-with-ta
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private void checkLocationPermission() {

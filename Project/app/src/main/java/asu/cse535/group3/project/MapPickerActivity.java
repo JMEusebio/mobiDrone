@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -49,9 +50,17 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
     private DatabaseHandler dh;
     String scheduleHour = "not set";
     String scheduleMinute = "not set";
+    private String username = "";
+    private String curLocation = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        {
+            username = getIntent().getStringExtra("USERNAME");
+        }
 
         initialpass = true;
         favlocs = new LatLng[4];
@@ -60,159 +69,173 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         favlocs[2] = new LatLng(33.420117,-111.932136);
         favlocs[3] = new LatLng(33.423567,-111.939269);
 
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_picker);
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-
-        mapFragment.getMapAsync(this);
-            
-        dh = new DatabaseHandler(this);
-
-        getSupportActionBar().setTitle("Select Location");
-
-        Button radio1 = (Button) findViewById(R.id.radioButton);
-        radio1.setOnClickListener( new android.view.View.OnClickListener() {
-
-            @Override
-            public void onClick(View v){
-
-                schedule = false;
-
-               // DroneServer.RequestDrone(currlatLng.latitude,currlatLng.longitude,mDLocationMarkerMarker.getPosition().latitude,mDLocationMarkerMarker.getPosition().longitude);
-
-            }});
-
-        //Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        //spinner.setOnItemSelectedListener(this);
-
-        Button radio2 = (Button) findViewById(R.id.radioButton2);
-        radio2.setOnClickListener( new android.view.View.OnClickListener() {
-
-            @Override
-            public void onClick(View v){
-
-                schedule = true;
-
-                // DroneServer.RequestDrone(currlatLng.latitude,currlatLng.longitude,mDLocationMarkerMarker.getPosition().latitude,mDLocationMarkerMarker.getPosition().longitude);
-
-            }});
-
-        Button reqButton = (Button) findViewById(R.id.requestButton);
-        reqButton.setOnClickListener( new android.view.View.OnClickListener() {
-
-            @Override
-            public void onClick(View v){
+        if (username.equals("")) {
+            Log.d("oh", "oh");
+            Intent intent = new Intent(MapPickerActivity.this, LoginActivity.class);
+            MapPickerActivity.this.startActivity(intent);
 
 
-            if(!schedule) {
+            super.onCreate(savedInstanceState);
+        }
+        else {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_map_picker);
 
-                Intent intent = new Intent(getBaseContext(), DroneMapActivity.class);
+            MapFragment mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map);
 
-                DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
+            mapFragment.getMapAsync(this);
 
-                intent.putExtra("dlat", mDLocationMarkerMarker.getPosition().latitude);
-                intent.putExtra("dlong", mDLocationMarkerMarker.getPosition().longitude);
-                //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //startActivityForResult(intent,0);
-                startActivity(intent);
+            dh = new DatabaseHandler(this);
 
-            }
+            getSupportActionBar().setTitle("Select Location");
 
-            if(schedule){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MapPickerActivity.this);
-                    builder.setMessage("Thank you for scheduling a drone. It will be dispatched at your selected time")
-                            .setPositiveButton("Close",null)
-                            .create()
-                            .show();
+            Button radio1 = (Button) findViewById(R.id.radioButton);
+            radio1.setOnClickListener(new android.view.View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    schedule = false;
+
+                    // DroneServer.RequestDrone(currlatLng.latitude,currlatLng.longitude,mDLocationMarkerMarker.getPosition().latitude,mDLocationMarkerMarker.getPosition().longitude);
+
+                }
+            });
+
+            //Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            //spinner.setOnItemSelectedListener(this);
+
+            Button radio2 = (Button) findViewById(R.id.radioButton2);
+            radio2.setOnClickListener(new android.view.View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    schedule = true;
+
+                    // DroneServer.RequestDrone(currlatLng.latitude,currlatLng.longitude,mDLocationMarkerMarker.getPosition().latitude,mDLocationMarkerMarker.getPosition().longitude);
+
+                }
+            });
+
+            Button reqButton = (Button) findViewById(R.id.requestButton);
+            reqButton.setOnClickListener(new android.view.View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
 
 
-                    Calendar c = Calendar.getInstance();
-                    int hour = c.get(Calendar.HOUR_OF_DAY);
-                    int minute = c.get(Calendar.MINUTE);
+                    if (!schedule) {
+
+                        Intent intent = new Intent(getBaseContext(), DroneMapActivity.class);
+
+                        DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
+
+                        intent.putExtra("dlat", mDLocationMarkerMarker.getPosition().latitude);
+                        intent.putExtra("dlong", mDLocationMarkerMarker.getPosition().longitude);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //startActivityForResult(intent,0);
+                        startActivity(intent);
+
+                    }
+
+                    if (schedule) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MapPickerActivity.this);
+                        builder.setMessage("Thank you for scheduling a drone. It will be dispatched at your selected time")
+                                .setPositiveButton("Close", null)
+                                .create()
+                                .show();
+
+
+                        Calendar c = Calendar.getInstance();
+                        int hour = c.get(Calendar.HOUR_OF_DAY);
+                        int minute = c.get(Calendar.MINUTE);
 
 //                if(hour == Integer.parseInt(scheduleHour) && minute == Integer.parseInt(scheduleMinute)) {
 
 
-  //                  DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
-    //            }
-            }
+                        //                  DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
+                        //            }
+                    }
 
-            }});
+                    if (curLocation.equals("Current Location"))
+                        dh.addLocation(username, "Lat: " + currlatLng.latitude + "/Long: " + currlatLng.longitude);
+                    else
+                        dh.addLocation(username, curLocation);
 
-        Spinner spinner3 = (Spinner) findViewById(R.id.spinner);
-        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                }
+            });
+
+            Spinner spinner3 = (Spinner) findViewById(R.id.spinner);
+            spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                     scheduleHour = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        Spinner spinner4 = (Spinner) findViewById(R.id.spinner);
-        spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                scheduleMinute = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        Spinner faves = (Spinner) findViewById(R.id.spinner);
-        faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                
-                // NEXT 2 LINES NEED TO BE MOVED. NEED TO EXECUTE WHEN 'REQUEST DRONE' BUTTON IS PRESSED
-                String curLocation = parent.getItemAtPosition(position).toString();
-                dh.addLocation(curLocation);
-                    
-                if (!initialpass) {
-                    if (mDLocationMarkerMarker != null) {
-                        mDLocationMarkerMarker.remove();
-                    }
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    if (position==0)
-                    {
-                        markerOptions.position(currlatLng);
-                    }
-                    else
-                    {
-                        markerOptions.position(favlocs[position-1]);
-                    }
-                    markerOptions.draggable(true);
-                    markerOptions.title("Current Position");
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                    mDLocationMarkerMarker = mGoogleMap.addMarker(markerOptions);
-                    mDLocationMarkerMarker.setDraggable(true);
-
-                    TextView dloc = (TextView) findViewById(R.id.textView);
-                    dloc.setText("Destination: " + favlocs[position].latitude + ", " + favlocs[position].longitude);
-                    Button reqButton = (Button) findViewById(R.id.requestButton);
-                    reqButton.setEnabled(true);
                 }
 
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
+                }
+            });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            Spinner spinner4 = (Spinner) findViewById(R.id.spinner);
+            spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
+                    scheduleMinute = parent.getItemAtPosition(position).toString();
+                }
 
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            Spinner faves = (Spinner) findViewById(R.id.spinner);
+            faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    // NEXT 2 LINES NEED TO BE MOVED. NEED TO EXECUTE WHEN 'REQUEST DRONE' BUTTON IS PRESSED
+                    curLocation = parent.getItemAtPosition(position).toString();
+
+
+
+                    if (!initialpass) {
+                        if (mDLocationMarkerMarker != null) {
+                            mDLocationMarkerMarker.remove();
+                        }
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        if (position == 0) {
+                            markerOptions.position(currlatLng);
+                        } else {
+                            markerOptions.position(favlocs[position - 1]);
+                        }
+                        markerOptions.draggable(true);
+                        markerOptions.title("Current Position");
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                        mDLocationMarkerMarker = mGoogleMap.addMarker(markerOptions);
+                        mDLocationMarkerMarker.setDraggable(true);
+
+                        TextView dloc = (TextView) findViewById(R.id.textView);
+                        dloc.setText("Destination: " + favlocs[position].latitude + ", " + favlocs[position].longitude);
+                        Button reqButton = (Button) findViewById(R.id.requestButton);
+                        reqButton.setEnabled(true);
+                    }
+
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
 
     }
 

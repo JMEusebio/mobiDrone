@@ -45,6 +45,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
     LatLng currlatLng;
     Marker mDLocationMarkerMarker;
     LatLng[] favlocs;
+    private DatabaseHandler dh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,8 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+            
+        dh = new DatabaseHandler(this);
 
         getSupportActionBar().setTitle("Select Location");
 
@@ -131,6 +134,9 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String curLocation = parent.getItemAtPosition(position).toString();
+                dh.addLocation(curLocation);
+                    
                 if (!initialpass) {
                     if (mDLocationMarkerMarker != null) {
                         mDLocationMarkerMarker.remove();

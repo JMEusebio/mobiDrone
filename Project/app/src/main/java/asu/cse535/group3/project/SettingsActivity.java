@@ -12,12 +12,29 @@ import android.app.AlertDialog;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private String username = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        {
+            username = getIntent().getStringExtra("USERNAME");
+        }
 
+        Button home = (Button) findViewById(R.id.home);
+        home.setOnClickListener( new android.view.View.OnClickListener() {
+
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                intent.putExtra("USERNAME", username);
+                startActivity(intent);
+            }
+
+        });
 
         Button fButton = (Button) findViewById(R.id.settingsFeedback);
         fButton.setOnClickListener( new android.view.View.OnClickListener() {
@@ -25,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(SettingsActivity.this, MessageCenter.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
             }
 
@@ -42,6 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .show();
 
                 Intent intent = new Intent(SettingsActivity.this, HistoryActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
 
 

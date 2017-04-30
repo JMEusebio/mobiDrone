@@ -13,15 +13,22 @@ import android.widget.TextView;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private String username = "";
     private DatabaseHandler dh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_history);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        {
+            username = getIntent().getStringExtra("USERNAME");
+        }
+
         dh = new DatabaseHandler(this);
 
-        String locations = dh.getLocations();
+        String locations = dh.getLocations(username);
 
         Log.d("locations", locations);
         String[] locationsArray = locations.split(",");
@@ -33,11 +40,6 @@ public class HistoryActivity extends AppCompatActivity {
         TextView history4 = (TextView) findViewById(R.id.history4);
         TextView history5 = (TextView) findViewById(R.id.history5);
 
-        /*history1.setText("LOCATION 1");
-        history2.setText("LOCATION 1");
-        history3.setText("LOCATION 1");
-        history4.setText("LOCATION 1");
-        history5.setText("LOCATION 1");*/
 
         history1.setText(locationsArray[4]);
         history2.setText(locationsArray[3]);

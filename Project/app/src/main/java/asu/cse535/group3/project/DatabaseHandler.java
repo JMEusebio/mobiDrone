@@ -31,6 +31,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "_password";
     private static final String KEY_FEEDBACK = "feedback";
+    private static final String KEY_LOCATION = "location";
+
+    // Queue for location history
+    LimitedSizeQueue history = new LimitedSizeQueue(4);
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,8 +48,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_CONTACTS + "(ID INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_USERNAME + " TEXT," + KEY_PASSWORD + " TEXT" + ")";
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_CONTACTS + "(ID INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_USERNAME + " TEXT," + KEY_PASSWORD + " TEXT," + KEY_FEEDBACK + " TEXT," + KEY_LOCATION + " TEXT" +  ")";
+
         db.execSQL(CREATE_CONTACTS_TABLE);
+
+        //initLocationHistory();
     }
 
     // Upgrading database
@@ -63,6 +71,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
+
     public boolean addUser(String name, String username, String password) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -70,6 +79,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_NAME, name);
         values.put(KEY_USERNAME, username);
         values.put(KEY_PASSWORD, password);
+        values.put(KEY_LOCATION, "N/A,N/A,N/A,N/A,N/A");
 
 
         if(!usernameExists(username))
@@ -85,11 +95,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void addFeedback(String message)
     {
+        Log.d("feedback", "feedback");
+
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("insert into " + TABLE_CONTACTS + "(" + KEY_FEEDBACK +  ") values " + "('" + message + "') where " + KEY_USERNAME + " = 'bob'"  );
+        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_FEEDBACK + "='" + message + "' where username = 'bob'");
+        db.close();
 
         printUsers();
 
+    }
+
+    public void addLocation(String location)
+    {
+        history.add(location);
+
+        String locations = android.text.TextUtils.join(",", history);
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("update " + TABLE_CONTACTS + " set " + KEY_LOCATION + "='" + locations + "' where username = 'bob'");
+        db.close();
     }
 
     public boolean usernameExists(String username)
@@ -118,6 +142,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return false;
     }
 
+    public String getLocations()
+    {
+        String locations = "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + TABLE_CONTACTS + " where username = 'bob'",null);
+
+
+        if (res != null) {
+            res.moveToFirst();
+            locations = res.getString(5);
+        }
+
+        return locations;
+    }
+
 
     public void printUsers()
     {
@@ -129,16 +169,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             buffer.append("ID :"+ res.getString(0)+"\n");
             buffer.append("Name :"+ res.getString(1)+"\n");
             buffer.append("Username :"+ res.getString(2)+"\n");
-            buffer.append("Password :"+ res.getString(3)+"\n\n");
+            buffer.append("Password :"+ res.getString(3)+"\n");
+            buffer.append("Feedback :"+ res.getString(4)+"\n");
+            buffer.append("Location :"+ res.getString(5)+"\n\n");
         }
 
-        Log.d("hi", buffer.toString() );
+        Log.d("printUsers", buffer.toString());
     }
-
-    public void truncateUsers()
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-    }
-
 }

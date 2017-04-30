@@ -18,11 +18,18 @@ import static asu.cse535.group3.project.R.id.EditText02;
 
 public class MessageCenter extends AppCompatActivity {
     private DatabaseHandler dh;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_center);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        {
+            username = getIntent().getStringExtra("USERNAME");
+        }
 
         final Button feedback = (Button) findViewById(R.id.submitFeedback);
         final EditText message = (EditText) findViewById(R.id.EditText02);
@@ -35,7 +42,7 @@ public class MessageCenter extends AppCompatActivity {
                 String messageText = message.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(MessageCenter.this);
 
-               dh.addFeedback(messageText);
+               dh.addFeedback(username, messageText);
 
 
                 builder.setMessage("Your message has been sent. Thank you for your feedback!")

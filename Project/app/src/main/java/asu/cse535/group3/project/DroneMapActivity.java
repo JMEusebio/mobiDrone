@@ -572,6 +572,10 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         double stepY = 0.33; //0.33m = 1ft.
         double dy = 0;
         double dx = 0;
+        double strideLength = 1.5;
+        float bearing;
+
+
 
         if(current[0] == -1){
             return location;
@@ -579,7 +583,14 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         //code to figure out direction moving
 
-        lat = lat0 + (180/Math.PI)*(dy/6378137);
+        bearing = location.getBearing();
+
+        //determine which direction the step should be in
+
+        dx = strideLength * Math.cos(bearing);      //Calculate X coordinate relative to bearing
+        dy = strideLength * Math.sin(bearing);      //Calculate Y coordinate relative to bearing
+
+        lat = lat0 + (180/Math.PI)*(dy/6378137);        //Calculate step size (approximately 1.5 meters)
         lon = lon0 + (180/Math.PI)*(dx/6378137)/(Math.cos(Math.PI/180.0*lat0));
 
         nextCoordinates = new double[2];

@@ -33,9 +33,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.Calendar;
 
 public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,LocationListener,AdapterView.OnItemSelectedListener {
+        GoogleApiClient.OnConnectionFailedListener,LocationListener {
 
     private GoogleMap mGoogleMap;
     boolean initialpass;
@@ -46,6 +47,8 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
     Marker mDLocationMarkerMarker;
     LatLng[] favlocs;
     private DatabaseHandler dh;
+    String scheduleHour = "not set";
+    String scheduleMinute = "not set";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         favlocs[1] = new LatLng(33.415517,-111.927546);
         favlocs[2] = new LatLng(33.420117,-111.932136);
         favlocs[3] = new LatLng(33.423567,-111.939269);
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_picker);
@@ -124,11 +128,47 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
                             .create()
                             .show();
 
-                    //Code to check time and send drone at proper time
 
+                    Calendar c = Calendar.getInstance();
+                    int hour = c.get(Calendar.HOUR_OF_DAY);
+                    int minute = c.get(Calendar.MINUTE);
+
+//                if(hour == Integer.parseInt(scheduleHour) && minute == Integer.parseInt(scheduleMinute)) {
+
+
+  //                  DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
+    //            }
             }
 
             }});
+
+        Spinner spinner3 = (Spinner) findViewById(R.id.spinner);
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    scheduleHour = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner spinner4 = (Spinner) findViewById(R.id.spinner);
+        spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                scheduleMinute = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Spinner faves = (Spinner) findViewById(R.id.spinner);
         faves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -370,15 +410,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-    }
 
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
 
 
 

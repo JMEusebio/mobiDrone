@@ -35,7 +35,7 @@ public class MessageCenter extends AppCompatActivity {
                 String messageText = message.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(MessageCenter.this);
 
-               // dh.addFeedback(messageText);
+               dh.addFeedback(messageText);
 
 
                 builder.setMessage("Your message has been sent. Thank you for your feedback!")

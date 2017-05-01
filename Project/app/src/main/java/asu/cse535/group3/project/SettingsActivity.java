@@ -53,11 +53,11 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v){
-                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                builder.setMessage("Please view the request page for location history")
-                        .setPositiveButton("Continue",null)
-                        .create()
-                        .show();
+        //        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+         //       builder.setMessage("Please view the request page for location history")
+         //               .setPositiveButton("Continue",null)
+         //               .create()
+         //               .show();
 
                 Intent intent = new Intent(SettingsActivity.this, HistoryActivity.class);
                 intent.putExtra("USERNAME", username);

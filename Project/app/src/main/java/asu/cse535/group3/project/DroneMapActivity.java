@@ -117,6 +117,7 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
 
 
                 Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
 
             }});

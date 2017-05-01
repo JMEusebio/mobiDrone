@@ -38,6 +38,19 @@ public class DroneServer
     /**
      * Tells the server to send a drone to your location.
      */
+
+    public static void ScheduleDrone(Double originLat, Double originLon, Double targetLat, Double targetLon, String time)
+    {
+        CallService(SERVICE_URL + "ScheduleDrone?originLat=" + originLat +
+                "&originLon=" + originLon +
+                "&targetLat=" + targetLat +
+                "&targetLon=" + targetLon +
+                "&time=" + time);
+    }
+    /**
+    *   Tells server to send a drone at the requested time
+    */
+
     public static void PanicRequest(Double lat, Double lon)
     {
         CallService(SERVICE_URL + "PanicRequest?lat=" + lat + "&lon=" + lon);

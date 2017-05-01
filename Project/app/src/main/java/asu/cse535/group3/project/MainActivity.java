@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, MapPickerActivity.class);
                 intent.putExtra("USERNAME", username);
+                //finish();
+                //finish();
                 startActivity(intent);
 
             }

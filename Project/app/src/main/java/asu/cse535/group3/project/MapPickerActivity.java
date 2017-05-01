@@ -147,15 +147,18 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
                                 .create()
                                 .show();
 
+                        //Send request to server to send drone at future time scheduleTime
+                        String scheduleTime = scheduleHour + scheduleMinute;
+                        DroneServer.ScheduleDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude, scheduleTime);
 
-                        Calendar c = Calendar.getInstance();
-                        int hour = c.get(Calendar.HOUR_OF_DAY);
-                        int minute = c.get(Calendar.MINUTE);
+                       // Calendar c = Calendar.getInstance();
+                       // int hour = c.get(Calendar.HOUR_OF_DAY);
+                       // int minute = c.get(Calendar.MINUTE);
 
 //                if(hour == Integer.parseInt(scheduleHour) && minute == Integer.parseInt(scheduleMinute)) {
 
 
-                        //                  DroneServer.RequestDrone(currlatLng.latitude, currlatLng.longitude, mDLocationMarkerMarker.getPosition().latitude, mDLocationMarkerMarker.getPosition().longitude);
+                        //
                         //            }
                     }
 

@@ -68,7 +68,6 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         favlocs[1] = new LatLng(33.415517,-111.927546);
         favlocs[2] = new LatLng(33.420117,-111.932136);
         favlocs[3] = new LatLng(33.423567,-111.939269);
-        favlocs[4] = new LatLng(33.424498,-111.9405563);
 
         if (username.equals("")) {
             Log.d("oh", "oh");
@@ -135,6 +134,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
 
                         intent.putExtra("dlat", mDLocationMarkerMarker.getPosition().latitude);
                         intent.putExtra("dlong", mDLocationMarkerMarker.getPosition().longitude);
+                        intent.putExtra("USERNAME", username);
                         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         //startActivityForResult(intent,0);
                         startActivity(intent);

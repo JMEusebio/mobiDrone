@@ -69,6 +69,7 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
     boolean startingwarning;
     long lasttimeupdate;
     Polyline directions;
+    private String username = "";
 
 
 
@@ -87,6 +88,8 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         alertstart = false;
         dlatitude = ibundle.getDouble("dlat");
         dlongitude = ibundle.getDouble("dlong");
+        username = ibundle.getString("USERNAME");
+
         destloc = new Location("");
         destloc.setLatitude(dlatitude);
         destloc.setLongitude(dlongitude);

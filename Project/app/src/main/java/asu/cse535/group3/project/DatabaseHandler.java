@@ -1,3 +1,6 @@
+// FRAMEWORK FOR DATABASE HANDLER FROM SQLITE TUTORIAL:
+// http://www.androidhive.info/2011/11/android-sqlite-database-tutorial/
+
 package asu.cse535.group3.project;
 
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "contactsManager";
 
-    // Contacts table name
+    // Table name
     private static final String TABLE_CONTACTS = "users";
 
     // Contacts Table Columns names
@@ -39,8 +42,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = getWritableDatabase();
-
-       //truncateUsers();
         onCreate(db);
     }
 
@@ -48,12 +49,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_CONTACTS + "(ID INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_USERNAME + " TEXT," + KEY_PASSWORD + " TEXT," + KEY_FEEDBACK + " TEXT," + KEY_LOCATION + " TEXT" +  ")";
-
         db.execSQL(CREATE_CONTACTS_TABLE);
-
-        //initLocationHistory();
     }
 
     // Upgrading database
@@ -64,12 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
-
     }
-
-    /**
-     * All CRUD(Create, Read, Update, Delete) Operations
-     */
 
 
     public boolean addUser(String name, String username, String password) {
@@ -80,7 +72,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USERNAME, username);
         values.put(KEY_PASSWORD, password);
         values.put(KEY_LOCATION, "N/A,N/A,N/A,N/A,N/A");
-
 
         if(!usernameExists(username))
         {

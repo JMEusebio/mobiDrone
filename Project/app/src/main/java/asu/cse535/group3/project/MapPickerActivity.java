@@ -63,7 +63,7 @@ public class MapPickerActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         initialpass = true;
-        favlocs = new LatLng[4];
+        favlocs = new LatLng[5];
         favlocs[0] = new LatLng(33.418530,-111.934029);
         favlocs[1] = new LatLng(33.415517,-111.927546);
         favlocs[2] = new LatLng(33.420117,-111.932136);

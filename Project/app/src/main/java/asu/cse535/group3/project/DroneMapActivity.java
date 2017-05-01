@@ -205,9 +205,9 @@ public class DroneMapActivity extends AppCompatActivity implements OnMapReadyCal
         super.onPause();
 
         //stop location updates when Activity is no longer active
-        if (mGoogleApiClient != null) {
+        /*if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
+        }*/
     }
 
 
